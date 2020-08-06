@@ -11,38 +11,42 @@ class SearchBooks extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     if (this.state.category === "") {
       return;
     }
-    fetch(
-      `https://api.nytimes.com/svc/books/v3/lists/current/${this.state.category}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState(() => {
-          return {
-            ...this.state,
-            books: data.results.books
-          };
-        });
-      })
-      .catch(console.log);
+    try {
+      const url = `https://api.nytimes.com/svc/books/v3/lists/current/${this.state.category}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      const data = await response.json();
+
+      this.setState(() => {
+        return {
+          ...this.state,
+          books: data.results.books,
+        };
+      });
+    } catch (error) { console.error(error)}
   }
 
   handleCategoryChange(e) {
     this.setState({ category: e.target.value });
   }
-  componentDidMount() {
-    fetch(
-      "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({ categories: data.results });
-      })
-      .catch(console.log);
+  async componentDidMount() {
+    try {
+      const url =
+        "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG";
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      const data = await response.json();
+      this.setState({ categories: data.results });
+    } catch (error) { console.error(error)}
   }
 
   render() {
@@ -58,7 +62,9 @@ class SearchBooks extends React.Component {
           >
             {this.state.categories.map(
               ({ list_name_encoded, display_name }) => (
-                <MenuItem value={list_name_encoded} key={list_name_encoded}>{display_name}</MenuItem>
+                <MenuItem value={list_name_encoded} key={list_name_encoded}>
+                  {display_name}
+                </MenuItem>
               )
             )}
           </Select>
