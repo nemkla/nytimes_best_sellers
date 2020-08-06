@@ -1,13 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Select, MenuItem } from "@material-ui/core";
 import BookList from "./BookList";
 import "../styles/SearchBooks.css";
 
 function SearchBooks() {
+  const reducer = (state, action) => {
+    console.log("reducer called");
+    switch (action.type) {
+      case "SELECTED":
+        return state.map((item) => {
+          if (item.primary_isbn10 === action.primary_isbn10) {
+            return { ...item, selected: true };
+          } else {
+            return item;
+          }
+        });
+      case "UNSELECTED":
+        return state.map((item) => {
+          if (item.primary_isbn10 === action.primary_isbn10) {
+            return { ...item, selected: false };
+          } else {
+            return item;
+          }
+        });
+      default:
+        return action.items;
+    }
+  };
+
+  const handleChange = (item) => {
+    dispatch({
+      type: item.selected ? "UNSELECTED" : "SELECTED",
+      primary_isbn10: item.primary_isbn10,
+    });
+  };
+
   const [menu, setMenu] = useState([]);
-  const [books, setBooks] = useState([]);
-  const [category, setCategory] = useState('');
-  const [url, setUrl] = useState("https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG");
+  const [category, setCategory] = useState("");
+  const [url, setUrl] = useState(
+    "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG"
+  );
+  const [books, dispatch] = useReducer(reducer, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -17,7 +50,9 @@ function SearchBooks() {
           throw Error(response.statusText);
         }
         const data = await response.json();
-        data.results.books ? setBooks(data.results.books) : setMenu(data.results);
+        data.results.books
+          ? dispatch({ type: "ITEMS_RECEIVED", items: data.results.books })
+          :  setMenu(data.results);
       } catch (error) {
         console.error(error);
       }
@@ -25,15 +60,18 @@ function SearchBooks() {
     fetchData();
   }, [url]);
 
-
-  const handleOnSubmit = event => {
+  const handleOnSubmit = (event) => {
     event.preventDefault();
-    category !== '' ? setUrl(`https://api.nytimes.com/svc/books/v3/lists/current/${category}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`) : alert("Category cannot be empty!!!");
-  }
+    category !== ""
+      ? setUrl(
+          `https://api.nytimes.com/svc/books/v3/lists/current/${category}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`
+        )
+      : alert("Category cannot be empty!!!");
+  };
 
   return (
     <React.Fragment>
-      <form className="form" onSubmit={handleOnSubmit} >
+      <form className="form" onSubmit={handleOnSubmit}>
         <Select
           className="select"
           labelId="category"
@@ -51,7 +89,7 @@ function SearchBooks() {
           Search
         </button>
       </form>
-      <BookList books={books} />
+      <BookList books={books} handleChange={handleChange} />
     </React.Fragment>
   );
 }
