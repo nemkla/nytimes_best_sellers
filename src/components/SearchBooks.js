@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { Select, MenuItem } from "@material-ui/core";
-
-import "../styles/SearchBooks.css";
 import BookList from "./BookList";
+import "../styles/SearchBooks.css";
 
 class SearchBooks extends React.Component {
   constructor(props) {
@@ -14,7 +13,7 @@ class SearchBooks extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    if (this.state.category == "") {
+    if (this.state.category === "") {
       return;
     }
     fetch(
@@ -25,7 +24,7 @@ class SearchBooks extends React.Component {
         this.setState(() => {
           return {
             ...this.state,
-            books: data.results.books,
+            books: data.results.books
           };
         });
       })
@@ -59,7 +58,7 @@ class SearchBooks extends React.Component {
           >
             {this.state.categories.map(
               ({ list_name_encoded, display_name }) => (
-                <MenuItem value={list_name_encoded}>{display_name}</MenuItem>
+                <MenuItem value={list_name_encoded} key={list_name_encoded}>{display_name}</MenuItem>
               )
             )}
           </Select>
