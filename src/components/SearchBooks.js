@@ -10,13 +10,6 @@ function SearchBooks() {
     "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG";
   const [url, setUrl] = useState(URL);
 
-  const handleChange = (item) => {
-    dispatch({
-      type: item.selected ? "UNSELECTED" : "SELECTED",
-      primary_isbn10: item.primary_isbn10,
-    });
-  };
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -80,7 +73,9 @@ function SearchBooks() {
 
   const selectedCategory = categories.selected;
 
+  console.log('Render: SearchBooks');
   return (
+
     <React.Fragment>
       <form className="form" onSubmit={handleOnSubmit}>
         <select
@@ -99,7 +94,7 @@ function SearchBooks() {
           Search
         </button>
       </form>
-      <BookList books={books.data} handleChange={handleChange} />
+      <BookList books={books.data} />
     </React.Fragment>
   );
 }

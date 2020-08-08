@@ -19,22 +19,34 @@ export default function bookReducer(state, { type, payload }) {
         isLoading: false,
         isError: true,
       };
+
+    case "DELETE_BOOK":
+    return {
+      ...state,
+      data: state.data.filter(item => item.primary_isbn10 !== payload)
+    };
     case "SELECTED_BOOK":
-      return state.data.map((item) => {
-        if (item.primary_isbn10 === payload) {
-          return { ...item, selected: true };
-        } else {
-          return item;
-        }
-      });
+      return {
+        ...state,
+        data: state.data.map((item) => {
+          if (item.primary_isbn10 === payload) {
+            return { ...item, selected: true };
+          } else {
+            return item;
+          }
+        })
+      };
     case "UNSELECTED_BOOK":
-      return state.data.map((item) => {
+    return {
+      ...state,
+      data: state.data.map((item) => {
         if (item.primary_isbn10 === payload) {
           return { ...item, selected: false };
         } else {
           return item;
         }
-      });
+      })
+    };
     default:
       return state;
   }
