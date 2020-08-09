@@ -12,7 +12,10 @@
     "material-ui-image": "^3.2.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-redux": "^7.2.1",
     "react-scripts": "3.4.1",
+    "recompose": "^0.30.0",
+    "redux": "^4.0.5",
     "use-combined-reducers": "^1.0.4"
   },
   "scripts": {
