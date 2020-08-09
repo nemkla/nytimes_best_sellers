@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import BookList from "./BookList";
-import "../styles/SearchBooks.css";
+import { compose } from 'recompose';
+
 import { AppContext } from "../contexts/AppContext";
+
+import BookList from "./BookList";
+import CategoryForm from "./CategoryForm";
+
+import "../styles/SearchBooks.css";
 
 function SearchBooks() {
   const [state, dispatch] = useContext(AppContext);
@@ -60,9 +65,9 @@ function SearchBooks() {
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    selectedCategory !== ""
+    categories.selected !== ""
       ? setUrl(
-          `https://api.nytimes.com/svc/books/v3/lists/current/${selectedCategory}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`
+          `https://api.nytimes.com/svc/books/v3/lists/current/${categories.selected}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`
         )
       : alert("Category cannot be empty!!!");
   };
@@ -71,31 +76,40 @@ function SearchBooks() {
     dispatch({ type: "SELECTED_CATEGORY", payload: name });
   };
 
-  const selectedCategory = categories.selected;
+  const withMaybe = (conditionalRenderingFn) => (Component) => (props) =>
+    conditionalRenderingFn(props)
+      ? null
+      : <Component { ...props } />
+
+  const withEither = (conditionalRenderingFn, EitherComponent) => (Component) => (props) =>
+    conditionalRenderingFn(props)
+      ? <EitherComponent />
+      : <Component { ...props } />
+
+  const LoadingIndicator = () => <p>Loading ...</p>;
+  const ErrorMessage = () => <p>Oops, something went wrong ...</p>;
+  const EmptyMessage = () => <p>No Data Available ...</p>;
+
+  const isLoadingConditionFunction = (props) => props.isLoading;
+  const isErrorConditionFunction = (props) => props.isError;
+  const isNullConditionFunction = (props) => !props.data;
+  const isEmptyConditionFunction = (props) => !props.data.length;
+
+  const withConditionalRenderings = compose(
+  withEither(isLoadingConditionFunction, LoadingIndicator),
+  withEither(isErrorConditionFunction, ErrorMessage),
+  withMaybe(isNullConditionFunction),
+  withEither(isEmptyConditionFunction, EmptyMessage));
+
+  const FormWithConditionalRendering = withConditionalRenderings(CategoryForm);
+  const BookListWithConditionalRendering = withConditionalRenderings(BookList);
 
   console.log('Render: SearchBooks');
   return (
-
-    <React.Fragment>
-      <form className="form" onSubmit={handleOnSubmit}>
-        <select
-          id="category"
-          value={selectedCategory}
-          onChange={(e) => handleOnChange(e.target.value)}
-        >
-          <option value="" key="" />
-          {categories.data.map(({ list_name_encoded, display_name }) => (
-            <option value={list_name_encoded} key={list_name_encoded}>
-              {display_name}
-            </option>
-          ))}
-        </select>
-        <button className="button" type="submit">
-          Search
-        </button>
-      </form>
-      <BookList books={books.data} />
-    </React.Fragment>
+    <>
+      <FormWithConditionalRendering { ...categories } handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} />
+      <BookListWithConditionalRendering  { ...books } />
+    </>
   );
 }
 export default SearchBooks;

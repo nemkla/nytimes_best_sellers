@@ -1,11 +1,11 @@
 import React from "react";
 import BookCard from "./BookCard";
 
-function BooksList({ books}) {
+function BooksList({ data }) {
   console.log('Render: BooksList');
   return (
     <>
-      {books.map((book, i) => (
+      {data.map((book, i) => (
         <BookCard key={book.primary_isbn10}  book={book} />
       ))}
     </>
