@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import {
   Typography,
   Paper,
@@ -6,8 +7,12 @@ import {
   ButtonGroup,
   Switch,
 } from "@material-ui/core";
+import {
+  doDeleteBook,
+  doSelectBook,
+  doUnSelectBook
+} from "../actions/book";
 import { makeStyles } from "@material-ui/core/styles";
-import { AppContext } from "../contexts/AppContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,19 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function BookCard({ book }) {
-  const [state, dispatch] = useContext(AppContext);
+function BookCard({ book, doUnSelectBook, doSelectBook, doDeleteBook }) {
 
-  const handleChange = (item) => {
-    dispatch({
-      type: item.selected ? "UNSELECTED_BOOK" : "SELECTED_BOOK",
-      payload: item.primary_isbn10,
-    });
+  const handleOnChange = (item) => {
+    item.selected ? doUnSelectBook(item.primary_isbn10) : doSelectBook(item.primary_isbn10);
   };
-
-  const handleOnClick = (book) => {
-    dispatch({ type: "DELETE_BOOK", payload: book.primary_isbn10 });
-  };
+  const handleOnClick = (book) => doDeleteBook(book.primary_isbn10);
   const classes = useStyles();
   console.log("Render: BookCard");
   return (
@@ -57,7 +55,7 @@ function BookCard({ book }) {
             book.selected ? classes.selectedBackgroundColor : ""
           }`}
         >
-          <Switch checked={book.selected} onChange={() => handleChange(book)} />
+          <Switch checked={book.selected} onChange={() => handleOnChange(book)} />
           <Typography variant="h3" color="textPrimary">
             {book.title}
           </Typography>
@@ -87,4 +85,13 @@ function BookCard({ book }) {
   );
 }
 
-export default BookCard;
+const mapDispatchToProps = (dispatch) => ({
+  doDeleteBook: query => dispatch(doDeleteBook(query)),
+  doSelectBook: query => dispatch(doSelectBook(query)),
+  doUnSelectBook: query => dispatch(doUnSelectBook(query))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(BookCard);

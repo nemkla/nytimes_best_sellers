@@ -1,16 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
-import { compose } from 'recompose';
-
-import { AppContext } from "../contexts/AppContext";
-
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { compose } from "recompose";
+import {
+  doFetchInitBook,
+  doFetchSuccessBook,
+  doFetchFailureBook
+} from "../actions/book";
+import {
+  doFetchInitCategory,
+  doFetchSuccessCategory,
+  doFetchFailureCategory,
+  doSelectCategory
+} from "../actions/category";
 import BookList from "./BookList";
 import CategoryForm from "./CategoryForm";
 
+
 import "../styles/SearchBooks.css";
 
-function SearchBooks() {
-  const [state, dispatch] = useContext(AppContext);
-  const { categories, books } = state;
+function SearchBooks({books, categories, doSelectCategory, doFetchInitCategory, doFetchSuccessCategory, doFetchFailureCategory, doFetchInitBook, doFetchSuccessBook, doFetchFailureBook }) {
   const URL =
     "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG";
   const [url, setUrl] = useState(URL);
@@ -20,16 +28,16 @@ function SearchBooks() {
       try {
         let didCancel = false;
         const fetchData = async () => {
-          let actionInit =
+          const init = () =>
             url === URL
-              ? { type: "FETCH_INIT_CATEGORY" }
-              : { type: "FETCH_INIT_BOOK" };
-          let actionFailure =
+              ? doFetchInitCategory()
+              : doFetchInitBook();
+          const failure = () =>
             url === URL
-              ? { type: "FETCH_FAILURE_CATEGORY" }
-              : { type: "FETCH_FAILURE_BOOK" };
+              ? doFetchFailureCategory()
+              : doFetchFailureBook();
 
-          dispatch(actionInit);
+          init();
           try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -38,16 +46,16 @@ function SearchBooks() {
             const data = await response.json();
 
             if (!didCancel) {
-              let actionSuccess =
+              const success  = () =>
                 url === URL
-                  ? { type: "FETCH_SUCCESS_CATEGORY", payload: data.results }
-                  : { type: "FETCH_SUCCESS_BOOK", payload: data.results.books };
+                  ? doFetchSuccessCategory(data.results)
+                  : doFetchSuccessBook(data.results.books);
 
-              dispatch(actionSuccess);
+            success();
             }
           } catch (error) {
             if (!didCancel) {
-              dispatch(actionFailure);
+              failure();
             }
           }
         };
@@ -72,9 +80,7 @@ function SearchBooks() {
       : alert("Category cannot be empty!!!");
   };
 
-  const handleOnChange = (name) => {
-    dispatch({ type: "SELECTED_CATEGORY", payload: name });
-  };
+  const handleOnChange = (name) => doSelectCategory(name);
 
   const withMaybe = (conditionalRenderingFn) => (Component) => (props) =>
     conditionalRenderingFn(props)
@@ -112,4 +118,23 @@ function SearchBooks() {
     </>
   );
 }
-export default SearchBooks;
+
+const mapStateToProps = ({bookState, categoryState}) => ({
+  books: bookState,
+  categories: categoryState
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  doSelectCategory: query => dispatch(doSelectCategory(query)),
+  doFetchInitCategory: query => dispatch(doFetchInitCategory(query)),
+  doFetchSuccessCategory: query => dispatch(doFetchSuccessCategory(query)),
+  doFetchFailureCategory: query => dispatch(doFetchFailureCategory(query)),
+  doFetchInitBook: query => dispatch(doFetchInitBook(query)),
+  doFetchSuccessBook: query => dispatch(doFetchSuccessBook(query)),
+  doFetchFailureBook: query => dispatch(doFetchFailureBook(query))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchBooks);
