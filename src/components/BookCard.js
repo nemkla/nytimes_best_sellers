@@ -40,41 +40,43 @@ const useStyles = makeStyles((theme) => ({
 
 function BookCard({ book, doUnSelectBook, doSelectBook, doDeleteBook }) {
 
-  const handleOnChange = (item) => {
-    item.selected ? doUnSelectBook(item.primary_isbn10) : doSelectBook(item.primary_isbn10);
+  const {primary_isbn10, selected, book_image, title, contributor, description, amazon_product_url } = book;
+  const handleOnChange = ({ primary_isbn10, selected }) => {
+    selected ? doUnSelectBook(primary_isbn10) : doSelectBook(primary_isbn10);
   };
-  const handleOnClick = (book) => doDeleteBook(book.primary_isbn10);
+  const handleOnClick = (primary_isbn10) => doDeleteBook(primary_isbn10);
   const classes = useStyles();
   console.log("Render: BookCard");
+
   return (
     <>
       <Paper elevation={3} className={classes.root}>
-        <img src={book.book_image} alt={book.title} className={classes.img} />
+        <img src={book_image} alt={title} className={classes.img} />
         <div
           className={`${classes.content} ${
-            book.selected ? classes.selectedBackgroundColor : ""
+            selected ? classes.selectedBackgroundColor : ""
           }`}
         >
-          <Switch checked={book.selected} onChange={() => handleOnChange(book)} />
+          <Switch checked={selected} onChange={() => handleOnChange({ primary_isbn10, selected })} />
           <Typography variant="h3" color="textPrimary">
-            {book.title}
+            {title}
           </Typography>
           <Typography variant="h4" color="textSecondary">
-            {book.contributor}
+            {contributor}
           </Typography>
-          <Typography component="p">{book.description}</Typography>
+          <Typography component="p">{description}</Typography>
           <ButtonGroup size="large" aria-label="large outlined button group">
             <Button
               variant="contained"
               color="primary"
-              href={book.amazon_product_url}
+              href={amazon_product_url}
             >
               BUY
             </Button>
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => handleOnClick(book)}
+              onClick={() => handleOnClick(primary_isbn10)}
             >
               DELETE FROM LIST
             </Button>
