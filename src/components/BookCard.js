@@ -7,11 +7,7 @@ import {
   ButtonGroup,
   Switch,
 } from "@material-ui/core";
-import {
-  doDeleteBook,
-  doSelectBook,
-  doUnSelectBook
-} from "../actions/book";
+import * as BookActions from "../actions/book";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,9 +84,9 @@ function BookCard({ book, doUnSelectBook, doSelectBook, doDeleteBook }) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  doDeleteBook: query => dispatch(doDeleteBook(query)),
-  doSelectBook: query => dispatch(doSelectBook(query)),
-  doUnSelectBook: query => dispatch(doUnSelectBook(query))
+  doDeleteBook: query => dispatch(BookActions.doDeleteBook(query)),
+  doSelectBook: query => dispatch(BookActions.doSelectBook(query)),
+  doUnSelectBook: query => dispatch(BookActions.doUnSelectBook(query))
 });
 
 export default connect(

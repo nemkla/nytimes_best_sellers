@@ -1,18 +1,27 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { createLogger } from 'redux-logger';
-import createSagaMiddleware from 'redux-saga';
+import { createBrowserHistory } from 'history';
+import { routerMiddleware } from 'react-router-redux';
 import rootReducer from '../reducers';
-import rootSaga from '../sagas';
 
-const logger = createLogger();
-//const saga = createSagaMiddleware();
+//import createSagaMiddleware from 'redux-saga';
+//import rootSaga from '../sagas';
 
-const store = createStore(
-  rootReducer,
-  undefined,
-  applyMiddleware(logger)
-);
+export const history = createBrowserHistory();
 
-//saga.run(rootSaga);
+export default function configureStore(preloadedState) {
+  const logger = createLogger();
+  const router = routerMiddleware(history);
+  //const saga = createSagaMiddleware();
+  const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  const store = createStore(
+    rootReducer(history),
+    preloadedState,
+    composeEnhancer(
+      applyMiddleware(logger, router)
+    )
+  )
+  //saga.run(rootSaga);
 
-export default store;
+  return store
+}

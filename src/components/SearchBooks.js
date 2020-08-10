@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import {
-  doFetchInitBook,
-  doFetchSuccessBook,
-  doFetchFailureBook
-} from "../actions/book";
-import {
-  doFetchInitCategory,
-  doFetchSuccessCategory,
-  doFetchFailureCategory,
-  doSelectCategory
-} from "../actions/category";
+import * as BookActions from "../actions/book";
+import * as CategoryActions from "../actions/category";
 import BookList from "./BookList";
 import CategoryForm from "./CategoryForm";
-
 
 import "../styles/SearchBooks.css";
 
@@ -125,13 +115,13 @@ const mapStateToProps = ({bookState, categoryState}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  doSelectCategory: query => dispatch(doSelectCategory(query)),
-  doFetchInitCategory: query => dispatch(doFetchInitCategory(query)),
-  doFetchSuccessCategory: query => dispatch(doFetchSuccessCategory(query)),
-  doFetchFailureCategory: query => dispatch(doFetchFailureCategory(query)),
-  doFetchInitBook: query => dispatch(doFetchInitBook(query)),
-  doFetchSuccessBook: query => dispatch(doFetchSuccessBook(query)),
-  doFetchFailureBook: query => dispatch(doFetchFailureBook(query))
+  doSelectCategory: query => dispatch(CategoryActions.doSelectCategory(query)),
+  doFetchInitCategory: query => dispatch(CategoryActions.doFetchInitCategory(query)),
+  doFetchSuccessCategory: query => dispatch(CategoryActions.doFetchSuccessCategory(query)),
+  doFetchFailureCategory: query => dispatch(CategoryActions.doFetchFailureCategory(query)),
+  doFetchInitBook: query => dispatch(BookActions.doFetchInitBook(query)),
+  doFetchSuccessBook: query => dispatch(BookActions.doFetchSuccessBook(query)),
+  doFetchFailureBook: query => dispatch(BookActions.doFetchFailureBook(query))
 });
 
 export default connect(
