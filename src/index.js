@@ -7,12 +7,12 @@ import { ConnectedRouter } from "connected-react-router";
 import "./styles/index.css";
 import App from "./App";
 import Books from "./components/sections/Books";
-
 import * as serviceWorker from "./serviceWorker";
-
 import configureStore, { history } from "./store";
+import fetchCategories from "./features/fetchCategories";
 
 const store = configureStore();
+store.dispatch(fetchCategories());
 
 ReactDOM.render(
   <React.StrictMode>
@@ -30,8 +30,4 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

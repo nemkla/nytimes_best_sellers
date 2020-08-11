@@ -70,3 +70,7 @@ export default function bookReducer(state = INITIAL_STATE, action) {
       return state;
   }
 }
+
+export const getBooks = state => state.data;
+export const getBooksPending = state => state.isLoading;
+export const getBooksError = state => state.isError;

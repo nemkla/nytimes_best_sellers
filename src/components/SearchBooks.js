@@ -1,71 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import * as BookActions from "../actions/book";
-import * as CategoryActions from "../actions/category";
+import { doSelectCategory } from "../actions/category";
+import fetchBooks from "../features/fetchBooks";
+
 import BookList from "./BookList";
 import CategoryForm from "./CategoryForm";
 
 import "../styles/SearchBooks.css";
 
-function SearchBooks({books, categories, doSelectCategory, doFetchInitCategory, doFetchSuccessCategory, doFetchFailureCategory, doFetchInitBook, doFetchSuccessBook, doFetchFailureBook }) {
+function SearchBooks({books, categories, doSelectCategory, doFetchBooks }) {
   const API_KEY = "6xpMY2BGw0tx5vACoxw8YNBq3NqHo4mo";
-  const URL =
-    `https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=${API_KEY}`;
-  const [url, setUrl] = useState(URL);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        let didCancel = false;
-        const fetchData = async () => {
-          const init = () =>
-            url === URL
-              ? doFetchInitCategory()
-              : doFetchInitBook();
-          const failure = () =>
-            url === URL
-              ? doFetchFailureCategory()
-              : doFetchFailureBook();
-
-          init();
-          try {
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw Error(response.statusText);
-            }
-            const data = await response.json();
-
-            if (!didCancel) {
-              const success  = () =>
-                url === URL
-                  ? doFetchSuccessCategory(data.results)
-                  : doFetchSuccessBook(data.results.books);
-
-            success();
-            }
-          } catch (error) {
-            if (!didCancel) {
-              failure();
-            }
-          }
-        };
-
-        fetchData();
-        return () => {
-          didCancel = true;
-        };
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchData();
-  }, [url]);
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
     categories.selected !== ""
-      ? setUrl(
+      ? doFetchBooks(
           `https://api.nytimes.com/svc/books/v3/lists/current/${categories.selected}.json?api-key=${API_KEY}`
         )
       : alert("Category cannot be empty!!!");
@@ -116,13 +66,8 @@ const mapStateToProps = ({bookState, categoryState}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  doSelectCategory: query => dispatch(CategoryActions.doSelectCategory(query)),
-  doFetchInitCategory: query => dispatch(CategoryActions.doFetchInitCategory(query)),
-  doFetchSuccessCategory: query => dispatch(CategoryActions.doFetchSuccessCategory(query)),
-  doFetchFailureCategory: query => dispatch(CategoryActions.doFetchFailureCategory(query)),
-  doFetchInitBook: query => dispatch(BookActions.doFetchInitBook(query)),
-  doFetchSuccessBook: query => dispatch(BookActions.doFetchSuccessBook(query)),
-  doFetchFailureBook: query => dispatch(BookActions.doFetchFailureBook(query))
+  doSelectCategory: query => dispatch(doSelectCategory(query)),
+  doFetchBooks: query => dispatch(fetchBooks(query))
 });
 
 export default connect(

@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from "redux";
+import thunk from 'redux-thunk';
 import { createLogger } from "redux-logger";
 import { createBrowserHistory } from "history";
 import { routerMiddleware } from "react-router-redux";
@@ -18,7 +19,7 @@ export default function configureStore(preloadedState) {
     rootReducer(history),
     preloadedState,
     composeEnhancer(
-      applyMiddleware(logger, router)
+      applyMiddleware(thunk, logger, router)
     )
   )
   //saga.run(rootSaga);

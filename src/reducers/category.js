@@ -46,3 +46,6 @@ export default function category(state = INITIAL_STATE, action) {
       return state;
   }
 }
+export const getCategories = state => state.data;
+export const getCategoriesPending = state => state.isLoading;
+export const getCategoriesError = state => state.isError;
