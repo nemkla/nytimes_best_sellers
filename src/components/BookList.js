@@ -2,7 +2,7 @@ import React from "react";
 import BookCard from "./BookCard";
 
 function BooksList({ data }) {
-  console.log('Render: BooksList');
+  console.log("Render: BooksList");
   return (
     <>
       {data.map((book, i) => (

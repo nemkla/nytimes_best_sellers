@@ -9,8 +9,9 @@ import CategoryForm from "./CategoryForm";
 import "../styles/SearchBooks.css";
 
 function SearchBooks({books, categories, doSelectCategory, doFetchInitCategory, doFetchSuccessCategory, doFetchFailureCategory, doFetchInitBook, doFetchSuccessBook, doFetchFailureBook }) {
+  const API_KEY = "6xpMY2BGw0tx5vACoxw8YNBq3NqHo4mo";
   const URL =
-    "https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG";
+    `https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=${API_KEY}`;
   const [url, setUrl] = useState(URL);
 
   useEffect(() => {
@@ -65,7 +66,7 @@ function SearchBooks({books, categories, doSelectCategory, doFetchInitCategory, 
     event.preventDefault();
     categories.selected !== ""
       ? setUrl(
-          `https://api.nytimes.com/svc/books/v3/lists/current/${categories.selected}.json?api-key=OGDK7aGVDlAT6L8KaYnfASlYi6ydHveG`
+          `https://api.nytimes.com/svc/books/v3/lists/current/${categories.selected}.json?api-key=${API_KEY}`
         )
       : alert("Category cannot be empty!!!");
   };
@@ -100,7 +101,7 @@ function SearchBooks({books, categories, doSelectCategory, doFetchInitCategory, 
   const FormWithConditionalRendering = withConditionalRenderings(CategoryForm);
   const BookListWithConditionalRendering = withConditionalRenderings(BookList);
 
-  console.log('Render: SearchBooks');
+  console.log("Render: SearchBooks");
   return (
     <>
       <FormWithConditionalRendering { ...categories } handleOnSubmit={handleOnSubmit} handleOnChange={handleOnChange} />

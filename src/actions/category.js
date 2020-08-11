@@ -1,4 +1,4 @@
-import { FETCH_INIT_CATEGORY, FETCH_SUCCESS_CATEGORY, FETCH_FAILURE_CATEGORY, SELECTED_CATEGORY } from '../constants/actionTypes';
+import { FETCH_INIT_CATEGORY, FETCH_SUCCESS_CATEGORY, FETCH_FAILURE_CATEGORY, SELECTED_CATEGORY } from "../constants/actionTypes";
 
 const doFetchInitCategory = payload => ({
   type: FETCH_INIT_CATEGORY,

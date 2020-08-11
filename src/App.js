@@ -1,14 +1,17 @@
-import React from "react";
-import SearchBooks from "./components/SearchBooks";
-import "./styles/App.css";
+import React from "react"
+import NYTAppBar from "./components/NYTAppBar"
+
+import "./styles/App.css"
 
 function App() {
-  console.log("Render: App");
+  console.log("Render: App")
   return (
+    <>
+    <NYTAppBar/>
     <div className="container">
-      <div className="title">The New York Times Best Sellers</div>
-      <SearchBooks />
+      <div className="title">Mini The New York Times</div>
     </div>
+    </>
   );
 }
 
