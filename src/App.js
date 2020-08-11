@@ -1,5 +1,6 @@
 import React from "react"
 import NYTAppBar from "./components/NYTAppBar"
+import TopStories from "./components/TopStories"
 
 import "./styles/App.css"
 
@@ -10,6 +11,7 @@ function App() {
     <NYTAppBar/>
     <div className="container">
       <div className="title">Mini The New York Times</div>
+      <TopStories />
     </div>
     </>
   );

@@ -1,17 +1,7 @@
-import { FETCH_INIT_CATEGORY, FETCH_SUCCESS_CATEGORY, FETCH_FAILURE_CATEGORY, SELECTED_CATEGORY } from "../constants/actionTypes";
+import { ADD_CATEGORIES, SELECTED_CATEGORY } from "../constants/actionTypes";
 
-const doFetchInitCategory = payload => ({
-  type: FETCH_INIT_CATEGORY,
-  payload
-});
-
-const doFetchSuccessCategory = payload => ({
-  type: FETCH_SUCCESS_CATEGORY,
-  payload
-});
-
-const doFetchFailureCategory = payload => ({
-  type: FETCH_FAILURE_CATEGORY,
+const doAddCategories = payload => ({
+  type: ADD_CATEGORIES,
   payload
 });
 
@@ -21,8 +11,6 @@ const doSelectCategory = payload => ({
 });
 
 export {
-  doFetchInitCategory,
-  doFetchSuccessCategory,
-  doFetchFailureCategory,
+  doAddCategories,
   doSelectCategory
 };

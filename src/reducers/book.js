@@ -1,28 +1,12 @@
-import { FETCH_INIT_BOOK, FETCH_SUCCESS_BOOK, FETCH_FAILURE_BOOK, DELETE_BOOK, SELECTED_BOOK, UNSELECTED_BOOK } from '../constants/actionTypes';
+import { ADD_BOOKS, DELETE_BOOK, SELECTED_BOOK, UNSELECTED_BOOK } from '../constants/actionTypes';
 
 const INITIAL_STATE = {
-  isLoading: false,
-  isError: false,
   data: []
 };
 
-const applyFetchInitBook = (state, action) => ({
-  ...state,
-  isLoading: true,
-  isError: false,
-});
-
 const applyFetchSuccessBook = (state, action) => ({
   ...state,
-  isLoading: false,
-  isError: false,
   data: action.payload
-});
-
-const applyFetchFailureBook = (state, action) => ({
-  ...state,
-  isLoading: false,
-  isError: true,
 });
 
 const applySelectBook = (state, action) => ({
@@ -54,12 +38,8 @@ const applyDeleteBook = (state, action) => ({
 
 export default function bookReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case FETCH_INIT_BOOK:
-      return applyFetchInitBook(state, action);
-    case FETCH_SUCCESS_BOOK:
+    case ADD_BOOKS:
       return applyFetchSuccessBook(state, action);
-    case FETCH_FAILURE_BOOK:
-      return applyFetchFailureBook(state, action);
     case SELECTED_BOOK:
       return applySelectBook(state, action);
     case UNSELECTED_BOOK:
@@ -72,5 +52,3 @@ export default function bookReducer(state = INITIAL_STATE, action) {
 }
 
 export const getBooks = state => state.data;
-export const getBooksPending = state => state.isLoading;
-export const getBooksError = state => state.isError;

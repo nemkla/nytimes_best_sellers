@@ -10,9 +10,11 @@ import Books from "./components/sections/Books";
 import * as serviceWorker from "./serviceWorker";
 import configureStore, { history } from "./store";
 import fetchCategories from "./features/fetchCategories";
+import fetchTopStories from "./features/fetchTopStories";
 
 const store = configureStore();
 store.dispatch(fetchCategories());
+store.dispatch(fetchTopStories());
 
 ReactDOM.render(
   <React.StrictMode>
