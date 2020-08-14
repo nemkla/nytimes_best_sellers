@@ -1,33 +1,47 @@
 import React from "react";
-import { connect } from "react-redux";
-import withConditionalRenderings from "../features/withConditionalRenderings";
-import { TOPSTORIES } from "../constants/stateKeys";
+import { Query, Mutation, Subscription } from '@apollo/client/react/components'; //depricated
+import { useQuery } from '@apollo/client' //use them
+import { TOPSTORIES_QUERY } from "../constants/queries"
 
-function TopStories({ topStories, fetchState }) {
+const TopStories = (client) => {
   console.log("Render: TopStories");
 
-  const { isLoading, isError } = fetchState;
-  const StoryList = () => <div>StoryList</div>;
-  const TopStoriesWithConditionalRendering = withConditionalRenderings(
-    StoryList
-  );
+  const { loading, error, data } = useQuery(TOPSTORIES_QUERY);
+
+  const StoryList = ({ stories, refetch }) => {
+    if (!stories) return
+    return (
+      <>
+        {Object.keys(stories).map( key => <div>{stories[key].title}</div> )}
+        <button onClick={refetch} type="submit" >refetch</button>
+      </>
+    )
+  }
+
+  const LoadingIndicator = () => <p>Loading ...</p>;
+  const ErrorMessage = () => <p>Oops, something went wrong ...</p>;
+  const EmptyMessage = () => <p>No Data Available ...</p>;
 
   return (
     <>
-      <TopStoriesWithConditionalRendering
-        {...topStories}
-        isLoading={isLoading[TOPSTORIES]}
-        isError={isError[TOPSTORIES]}
-      />
+    <Query query={TOPSTORIES_QUERY}>
+      {({ loading, error, data, refetch }) => {
+        if (loading) {
+          return <LoadingIndicator />;
+        }
+        if (error) {
+          return <ErrorMessage />;
+        }
+        if (data.stories.results.length === 0) {
+          return <EmptyMessage />;
+        }
+        return data.stories.results && <StoryList stories = {data.stories.results} refetch={refetch} />
+
+      }}
+    </Query>
     </>
   );
 }
 
-const mapStateToProps = ({ topStoriesState, fetchState }) => ({
-  topStories: topStoriesState,
-  fetchState: fetchState,
-});
 
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TopStories);
+export default TopStories;

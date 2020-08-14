@@ -1,7 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
-import NYTAppBar from "../NYTAppBar"
-import SearchBooks from "../SearchBooks"
+import NYTAppBar from "../components/NYTAppBar"
+import SearchBooks from "../components/SearchBooks"
 
 
 const Books = ({ pathname, search, hash }) => (

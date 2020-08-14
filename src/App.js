@@ -1,18 +1,18 @@
-import React from "react"
-import NYTAppBar from "./components/NYTAppBar"
-import TopStories from "./components/TopStories"
+import React from "react";
+import SearchBooks from "./components/SearchBooks";
+import TopStories from "./components/TopStories";
 
-import "./styles/App.css"
+import "./styles/App.css";
 
 function App() {
-  console.log("Render: App")
+  console.log("Render: App");
   return (
     <>
-    <NYTAppBar/>
-    <div className="container">
-      <div className="title">Mini The New York Times</div>
-      <TopStories />
-    </div>
+      <div className="container">
+        <div className="title">Mini The New York Times</div>
+        <SearchBooks />
+        <TopStories/>
+      </div>
     </>
   );
 }

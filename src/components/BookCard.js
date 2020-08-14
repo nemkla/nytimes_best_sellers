@@ -1,7 +1,4 @@
 import React from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { push } from "connected-react-router";
 import {
   Typography,
   Paper,
@@ -9,7 +6,6 @@ import {
   ButtonGroup,
   Switch,
 } from "@material-ui/core";
-import * as BookActions from "../actions/book";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,14 +35,22 @@ const useStyles = makeStyles((theme) => ({
 function BookCard({ book, actions, routerActions }){
 
   const { primary_isbn10, selected, book_image, title, contributor, description, amazon_product_url } = book;
-  const { doUnSelectBook, doSelectBook, doDeleteBook } = actions;
-  const { push } = routerActions;
-  const handleOnChange = ({ primary_isbn10, selected }) => {
-    selected ? doUnSelectBook(primary_isbn10) : doSelectBook(primary_isbn10);
-  };
-  const handleOnClick = (primary_isbn10) => doDeleteBook(primary_isbn10);
+
+  /*
+    const handleOnChange = ({ primary_isbn10, selected }) => {
+      selected ? doUnSelectBook(primary_isbn10) : doSelectBook(primary_isbn10);
+    };
+    const handleOnClick = (primary_isbn10) => doDeleteBook(primary_isbn10);
+    */
+  const handleOnSubmit = () => console.log('handleOnSubmit');
+  const handleOnClick = () => console.log('handleOnChange');
+  const handleOnChange = () => console.log('handleOnChange');
+
+
+
   const classes = useStyles();
   console.log("Render: BookCard");
+
 
   return (
     <>
@@ -58,16 +62,9 @@ function BookCard({ book, actions, routerActions }){
           }`}
         >
           <Switch checked={selected} onChange={() => handleOnChange({ primary_isbn10, selected })} />
-          <div
-            onClick={() => {
-                push(`/books/${primary_isbn10}`);
-            }}
-          >
           <Typography variant="h3" color="textPrimary">
             {title}
           </Typography>
-          </div>
-
           <Typography variant="h4" color="textSecondary">
             {contributor}
           </Typography>
@@ -94,16 +91,4 @@ function BookCard({ book, actions, routerActions }){
   );
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: {
-    doDeleteBook: query => dispatch(BookActions.doDeleteBook(query)),
-    doSelectBook: query => dispatch(BookActions.doSelectBook(query)),
-    doUnSelectBook: query => dispatch(BookActions.doUnSelectBook(query))
-  },
-  routerActions: bindActionCreators({push}, dispatch)
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(BookCard);
+export default BookCard;

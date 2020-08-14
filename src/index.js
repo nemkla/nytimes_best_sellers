@@ -1,33 +1,59 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { Route, Switch } from "react-router" // react-router v4/v5
-import { ConnectedRouter } from "connected-react-router";
+
+import { RestLink } from 'apollo-link-rest';
+
+import { ApolloProvider } from '@apollo/client'
+
+import { ApolloClient } from '@apollo/client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 
 import "./styles/index.css";
 import App from "./App";
-import Books from "./components/sections/Books";
 import * as serviceWorker from "./serviceWorker";
-import configureStore, { history } from "./store";
-import fetchCategories from "./features/fetchCategories";
-import fetchTopStories from "./features/fetchTopStories";
 
-const store = configureStore();
-store.dispatch(fetchCategories());
-store.dispatch(fetchTopStories());
+const URL = "https://api.nytimes.com";
+
+const restLink = new RestLink({
+  uri: URL
+});
+
+
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    // Type policy map
+    addTypename: false,
+    books: {
+      results: {
+        books: {
+          fields: {
+            title: {
+              read(title) {
+                console.log(title);
+                return title.toLowerCase();
+              },
+            },
+          },
+        }
+      }
+    },
+  },
+});
+
+
+
+
+const client = new ApolloClient({
+  link: restLink,
+  cache: cache,
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <>
-        <Switch>
-          <Route exact path="/" component={App} />
-          <Route path="/books" component={Books} />
-        </Switch>
-        </>
-      </ConnectedRouter>
-    </Provider>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
