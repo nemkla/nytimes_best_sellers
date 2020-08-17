@@ -16,12 +16,11 @@ export const TOPSTORIES_QUERY = gql`
 `;
 
 export const BOOKS_QUERY = gql`
-  query booksQuery {
-    books @rest(type: "books", path: "/svc/books/v3/lists/current/hardcover-fiction.json?api-key=6xpMY2BGw0tx5vACoxw8YNBq3NqHo4mo") {
+  query booksQuery($category: String!) {
+    books(category:$category) @rest(type: "books", path: "/svc/books/v3/lists/current/{args.category}.json?api-key=6xpMY2BGw0tx5vACoxw8YNBq3NqHo4mo") {
       results @type(name: "results") {
         books  @type(name: "books") {
           primary_isbn10,
-          selected,
           book_image,
           title,
           contributor,
@@ -39,8 +38,7 @@ export const CATEGORIES_QUERY = gql`
       results @type(name: "results") {
         list_name_encoded,
         display_name,
-      },
-      selected
+      }
     }
   }
 `;

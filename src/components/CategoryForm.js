@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useState }  from "react";
+import BookList from "./BookList";
 
 import { useQuery, useMutation } from "@apollo/client";
 import { CATEGORIES_QUERY } from "../constants/queries";
+
 
 export default function CategoryForm() {
   const { loading, error, data } = useQuery(CATEGORIES_QUERY);
   const LoadingIndicator = () => <p>Loading ...</p>;
   const ErrorMessage = () => <p>Oops, something went wrong ...</p>;
   const EmptyMessage = () => <p>No Data Available ...</p>;
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const handleOnChange = (value) => setSelectedCategory(value);
 
-  const handleOnSubmit = () => console.log('handleOnSubmit');
-  const handleOnChange = () => console.log('handleOnChange');
-  const selected = "hardcover-fiction"
+  const Books = ({category}) => {
+    if (category) {
+      return <BookList category={category}/>
+    }
+    else {
+      return null;
+    }
+  }
 
   if (loading) {
     return <LoadingIndicator />;
@@ -23,11 +32,14 @@ export default function CategoryForm() {
   if (data && data.categories.results.length === 0) {
     return <EmptyMessage />;
   }
-  return (data && data.categories.results &&
-    <form className="form" onSubmit={handleOnSubmit}>
+  return (
+    data && data.categories.results &&
+
+    <>
+    <form className="form" onSubmit={(e)=>{ e.preventDefault(); }}>
       <select
         id="category"
-        value={selected}
+        value={selectedCategory}
         onChange={(e) => handleOnChange(e.target.value)}
       >
         <option value="" key="" />
@@ -41,5 +53,7 @@ export default function CategoryForm() {
         Search
       </button>
     </form>
+    <Books category={selectedCategory}/>
+    </>
   );
 }

@@ -4,10 +4,10 @@ import BookCard from "./BookCard";
 import { useQuery } from "@apollo/client";
 import { BOOKS_QUERY } from "../constants/queries";
 
-function BooksList() {
-  console.log("Render: BooksList");
+function BookList({category}) {
+  console.log("Render: BooksList, ",category);
 
-  const { loading, error, data } = useQuery(BOOKS_QUERY);
+  const { loading, error, data } = useQuery(BOOKS_QUERY,{variables:{category:category}});
   const LoadingIndicator = () => <p>Loading ...</p>;
   const ErrorMessage = () => <p>Oops, something went wrong ...</p>;
   const EmptyMessage = () => <p>No Data Available ...</p>;
@@ -30,4 +30,4 @@ function BooksList() {
   );
 }
 
-export default BooksList;
+export default BookList;

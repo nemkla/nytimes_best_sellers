@@ -11,7 +11,6 @@ function App() {
       <div className="container">
         <div className="title">Mini The New York Times</div>
         <SearchBooks />
-        <TopStories/>
       </div>
     </>
   );
